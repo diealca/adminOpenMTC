@@ -12,19 +12,28 @@ import { RegisterComponent } from './register/register.component';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { TokenInterceptorService } from './token-interceptor.service';
+import { AdminusersComponent } from './adminusers/adminusers.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from './material/material.module';
+import { MandevicesComponent } from './mandevices/mandevices.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     DashComponent,
-    RegisterComponent
+    RegisterComponent,
+    AdminusersComponent,
+    MandevicesComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MaterialModule,
+    BrowserAnimationsModule
   ],
   providers: [AuthService,AuthGuard,{
     provide: HTTP_INTERCEPTORS,

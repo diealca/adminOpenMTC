@@ -21,11 +21,23 @@
                       <input [(ngModel)]="loginUserData.user" name="user" type="text" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Ingrese el usuario">
                     </div>
                     <div class="form-group">
-                      <input [(ngModel)]="loginUserData.password" name="password" type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Password">
+                      <input [(ngModel)]="loginUserData.password" name="password" type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Contraseña">
                     </div>
                     <button (click)="loginUser()" class="btn btn-primary btn-user btn-block">
                       Ingresar
                     </button>
+
+                    <div class="text-center" *ngIf="(errorMsg!=='')">
+                      <div class="btn-danger btn-icon-split">
+                        <span class="icon text-white-50">
+                          <i class="fas fa-exclamation-triangle"></i>
+                        </span>
+                        <span class="text">{{errorMsg}}</span>
+                        <button class="close" type="button" (click)="clearError()" aria-label="Close">
+                          <span aria-hidden="true">×</span>
+                        </button>
+                      </div>
+                    </div>
                   </form>
                 </div>
               </div>

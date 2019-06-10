@@ -9,11 +9,7 @@ import { Router } from '@angular/router';
 export class AuthService {
 
   private _loginUrl = "/api/login"
-  private _httpOptions = {
-    headers: new HttpHeaders({
-      'Origin':  'console.openmtc.org'
-    })
-  }
+
   constructor(private http: HttpClient,
               private _router: Router){}
 
@@ -23,6 +19,8 @@ export class AuthService {
 
   logoutUser(){
     localStorage.removeItem('token')
+    localStorage.removeItem('currentUser')
+    localStorage.removeItem('role')
     this._router.navigate(['/login'])
   }
 
@@ -32,5 +30,13 @@ export class AuthService {
 
   getToken(){
     return localStorage.getItem('token')
+  }
+
+  getCurrentUser(){
+    return localStorage.getItem('currentUser')
+  }
+
+  getCurrentRol(){
+    return localStorage.getItem('role')
   }
 }

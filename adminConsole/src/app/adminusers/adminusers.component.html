@@ -1,0 +1,186 @@
+<div class="container-fluid">
+
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">Administración de usuarios</h1>
+  <p class="mb-4">En esta sección se podrán administrar los usuarios que tendran acceso a la consola.</p>
+
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Usuarios</h6>
+    </div>
+    <div class="card-body">
+            <div class="text-center" *ngIf="(errorMsg!=='')">
+              <div class="btn-danger btn-icon-split">
+                <span class="icon text-white-50">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </span>
+                <span class="text">{{errorMsg}}</span>
+                <button class="close" type="button" (click)="clearMsg()" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+            </div>
+          <div>
+              <div class="text-center" *ngIf="(successMsg!=='')">
+                  <div class="btn-success btn-icon-split">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-check"></i>
+                    </span>
+                    <span class="text">{{successMsg}}</span>
+                    <button class="close" type="button" (click)="clearMsg()" aria-label="Close">
+                      <span aria-hidden="true">×</span>
+                    </button>
+                  </div>
+                </div>
+            <div>
+            <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm text-white-50" href="#createUserModal" data-toggle="modal">
+              <i class="fas fa-fw fa-plus"></i>
+              <span>Nuevo Usuario</span>
+            </a>
+          </div>
+        <div class="mat-elevation-z8">
+            <mat-table [dataSource]="listData" matSort>
+                <ng-container matColumnDef="Usuario">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Usuario</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{element.user}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Email">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>E-mail</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{element.email}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Rol">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Rol</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{element.role}}</mat-cell>
+                </ng-container>}
+                <ng-container matColumnDef="actions">
+                  <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                      <button class="btn btn-info btn-circle" href="#modifyUserModal" data-toggle="modal" (click)="chargeUser(row)">
+                        <i class="fas fa-external-link-alt"></i>
+                      </button>
+                      <button class="btn btn-danger btn-circle" (click)="deleteUser(row)">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                <mat-paginator [pageSizeOptions]="[5,10,25,10]" [pageSize]="5" showFirstLastButtons></mat-paginator>
+              </mat-table>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- Modify User Modal-->
+<div class="modal fade" id="modifyUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modifyUserLabel">Modificar usuario</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="p-5">
+                  <form class="user">
+                    <div class="form-group row">
+                      <div class="col-sm-6 mb-3 mb-sm-0">
+                        <input [(ngModel)]="modifyUserData.user" name="user" type="text" class="form-control form-control-user" id="exampleFirstName" placeholder="Usuario">
+                      </div>
+                      <div class="col-sm-6">
+                        <select [(ngModel)]="modifyUserData.role" name="role" class="form-control" id="exampleRole" placeholder="Rol">
+                            <option value="administrador">Administrador</option>
+                            <option value="operador">Operador</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <input [(ngModel)]="modifyUserData.email" name="email" type="email" class="form-control form-control-user" id="exampleInputEmail" placeholder="Correo Electrónico">
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-sm-6 mb-3 mb-sm-0">
+                        <input [(ngModel)]="modifyUserData.password" name="password" type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Contraseña">
+                      </div>
+                      <div class="col-sm-6">
+                        <input [(ngModel)]="passwordVer" name="passwordVer" type="password" class="form-control form-control-user" id="exampleRepeatPassword" placeholder="Verificación Contraseña">
+                      </div>
+                    </div>
+                  </form>
+                  <div class="text-center" *ngIf="(modifyUserData.password!==passwordVer && passwordVer!=='')">
+                      <div class="btn-danger btn-icon-split">
+                        <span class="icon text-white-50">
+                          <i class="fas fa-exclamation-triangle"></i>
+                        </span>
+                        <span class="text">La contraseña no coincide</span>
+                      </div>
+                </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal" (click)="clearUser()">Cancel</button>
+            <button class="btn btn-primary" [disabled]="(modifyUserData.user==='')||(modifyUserData.email==='')||(modifyUserData.role==='') || (modifyUserData.password!==passwordVer)" type="button" data-dismiss="modal" (click)="modifyUser()">Modificar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+<!-- Create User Modal-->
+<div class="modal fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Crear nuevo usuario</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="p-5">
+                <form class="user">
+                  <div class="form-group row">
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                      <input [(ngModel)]="registerUserData.user" name="user" type="text" class="form-control form-control-user" id="exampleFirstName" placeholder="Usuario">
+                    </div>
+                    <div class="col-sm-6">
+                      <select [(ngModel)]="registerUserData.role" name="role" class="form-control" id="exampleRole" placeholder="Rol">
+                          <option value="administrador">Administrador</option>
+                          <option value="operador">Operador</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <input [(ngModel)]="registerUserData.email" name="email" type="email" class="form-control form-control-user" id="exampleInputEmail" placeholder="Correo Electrónico">
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                      <input [(ngModel)]="registerUserData.password" name="password" type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Contraseña">
+                    </div>
+                    <div class="col-sm-6">
+                      <input [(ngModel)]="passwordVer" name="passwordVer" type="password" class="form-control form-control-user" id="exampleRepeatPassword" placeholder="Verificación Contraseña">
+                    </div>
+                  </div>
+                </form>
+                <div class="text-center" *ngIf="(registerUserData.password!==passwordVer && passwordVer!=='')">
+                    <div class="btn-danger btn-icon-split">
+                      <span class="icon text-white-50">
+                        <i class="fas fa-exclamation-triangle"></i>
+                      </span>
+                      <span class="text">La contraseña no coincide</span>
+                    </div>
+              </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <button class="btn btn-primary" [disabled]="(registerUserData.user==='')||(registerUserData.email==='')||(registerUserData.password==='')||(registerUserData.role==='') || (registerUserData.password!==passwordVer)" type="button" data-dismiss="modal" (click)="createUser()">Crear</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+

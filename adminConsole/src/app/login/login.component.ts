@@ -10,6 +10,7 @@ import { AuthService } from '../auth.service';
 export class LoginComponent implements OnInit {
 
   loginUserData = {}
+  errorMsg=""
 
   constructor(private _auth: AuthService,
     private _router: Router) { }
@@ -22,10 +23,20 @@ export class LoginComponent implements OnInit {
       .subscribe(
         res => {
           console.log(res)
+          localStorage.setItem('currentUser',res.user)
           localStorage.setItem('token',res.token)
+          localStorage.setItem('role',res.role)
           this._router.navigate(['/dash'])
         },
-        err => console.log (err)
+        err =>{
+          console.log (err)
+          this.errorMsg=err.error
+        }
+
       )
+  }
+
+  clearError(){
+    this.errorMsg=""
   }
 }

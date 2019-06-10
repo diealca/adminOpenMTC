@@ -1,3 +1,7 @@
 @import 'styles/css/sb-admin-2.css';
 @import 'styles/css/sb-admin-2.min.css';
 @import '../vendor/fontawesome-free/css/all.min.css';
+@import '../vendor/datatables/dataTables.bootstrap4.min.css';
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

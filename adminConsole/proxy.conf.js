@@ -12,6 +12,19 @@ const PROXY_CONFIG = {
       "secure": true,
     "logLevel": "debug",
     "changeOrigin": true
+  },
+  "/gateway/*": {
+    "target":{
+      "host": "gateway.openmtc.org",
+      "port": "18000",
+      "protocol": "https:",
+      "key": fs.readFileSync('./cert/console.key.pem'),
+      "cert": fs.readFileSync('./cert/console.crt.pem'),
+      "ca":fs.readFileSync('./cert/signing-ca-chain.pem')
+      },
+      "secure": true,
+    "logLevel": "debug",
+    "changeOrigin": true
   }
 }
 
