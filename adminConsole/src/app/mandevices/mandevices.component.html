@@ -1,45 +1,69 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Gestión de dispositivos</h1>
-    <p class="mb-4">En esta sección se podrán adicionar o eliminar dispositadministrar los usuarios que tendran acceso a la consola.</p>
+    <h1 class="h3 mb-2 text-gray-800">Administración de dispositivos</h1>
+    <p class="mb-4">En esta sección se podrán adicionar o eliminar dispositivos. También asosciarlos a un operador.</p>
 
-    <!-- DataTales Example -->
+    <!-- DataTales Devices -->
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Usuarios</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Dispositivos</h6>
       </div>
       <div class="card-body">
+          <div class="text-center" *ngIf="(errorMsg!=='')">
+              <div class="btn-danger btn-icon-split">
+                <span class="icon text-white-50">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </span>
+                <span class="text">{{errorMsg}}</span>
+                <button class="close" type="button" (click)="clearMsg()" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+            </div>
+          <div>
+              <div class="text-center" *ngIf="(successMsg!=='')">
+                  <div class="btn-success btn-icon-split">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-check"></i>
+                    </span>
+                    <span class="text">{{successMsg}}</span>
+                    <button class="close" type="button" (click)="clearMsg()" aria-label="Close">
+                      <span aria-hidden="true">×</span>
+                    </button>
+                  </div>
+                </div>
+            <div>
           <div class="search-div">
-              <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm text-white-50">
+              <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm text-white-50" href="#addDeviceModal" data-toggle="modal" (click)="getDevices()">
                   <i class="fas fa-fw fa-plus"></i>
-                  <span>Nuevo Usuario</span>
+                  <span>Adicionar dispositivo</span>
               </a>
 
           </div>
           <div class="mat-elevation-z8">
               <mat-table [dataSource]="listData" matSort>
-                  <ng-container matColumnDef="Usuario">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Usuario</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.user}}</mat-cell>
+                  <ng-container matColumnDef="Dispositivo">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Dispositivo</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.urilDispositivo.split('/')[5]}}</mat-cell>
                   </ng-container>
-                  <ng-container matColumnDef="Email">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>E-mail</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.email}}</mat-cell>
+                  <ng-container matColumnDef="Tipo">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.tipo}}</mat-cell>
                   </ng-container>
-                  <ng-container matColumnDef="Rol">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Rol</mat-header-cell>
-                    <mat-cell *matCellDef="let element">{{element.role}}</mat-cell>
-                  </ng-container>}
+                  <ng-container matColumnDef="Descripcion">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Descripción</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.descripcion}}</mat-cell>
+                  </ng-container>
                   <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let row">
-                        <a href="#" class="btn btn-info btn-circle">
+                      <button class="btn btn-info btn-circle" (click)="editPermissions(row)">
                           <i class="fas fa-external-link-alt"></i>
-                        </a>
-                        <a href="#" class="btn btn-danger btn-circle">
+                      </button>
+                        <button class="btn btn-danger btn-circle" (click)="deleteDevice(row)">
                           <i class="fas fa-trash"></i>
-                        </a>
+                        </button>
                     </mat-cell>
                   </ng-container>
                   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -50,5 +74,149 @@
       </div>
     </div>
 
+
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4" *ngIf="showEdit">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Editar operadores para {{editDevice.urilDispositivo.split('/')[4]}}</h6>
+    </div>
+    <div class="card-body">
+        <div class="search-div">
+            <a class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm text-white-50" href="#addOperadorModal" data-toggle="modal" (click)="getUsersOperador()">
+                <i class="fas fa-fw fa-plus"></i>
+                <span>Adicionar Operador</span>
+            </a>
+
+        </div>
+        <div class="mat-elevation-z8">
+            <mat-table [dataSource]="listUsers" matSort>
+                <ng-container matColumnDef="Usuario">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Usuario</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{element.user}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Permiso">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Permiso</mat-header-cell>
+                  <mat-cell *matCellDef="let element">
+                    <select [(ngModel)]="element.tipo" name="role" class="form-control" id="exampleRole" placeholder="Rol">
+                        <option value="readwrite">Control/Monitoreo</option>
+                        <option value="readonly">Monitoreo</option>
+                    </select>
+                  </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                  <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                      <a href="#" class="btn btn-info btn-circle">
+                        <i class="fas fa-external-link-alt"></i>
+                      </a>
+                      <a href="#" class="btn btn-danger btn-circle">
+                        <i class="fas fa-trash"></i>
+                      </a>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedUsers"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedUsers;"></mat-row>
+                <mat-paginator [pageSizeOptions]="[5,10,25,10]" [pageSize]="5" showFirstLastButtons></mat-paginator>
+              </mat-table>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Add operator Modal-->
+<div class="modal fade" id="addOperadorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Agregar Operador</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="mat-elevation-z8">
+              <mat-table [dataSource]="listOperadores">
+                  <ng-container matColumnDef="Usuario">
+                    <mat-header-cell *matHeaderCellDef>Usuario</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.user}}</mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="Permiso">
+                    <mat-header-cell *matHeaderCellDef>Permiso</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <select [(ngModel)]="element.permiso" name="role" class="form-control" id="exampleRole" placeholder="Rol">
+                            <option value="readwrite">Control/Monitoreo</option>
+                            <option value="readonly">Monitoreo</option>
+                        </select>
+                    </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        <button class="btn btn-info btn-circle" (click)="addPermiso(row)">
+                          <i class="fas fa-plus"></i>
+                        </button>
+                    </mat-cell>
+                  </ng-container>
+                  <mat-header-row *matHeaderRowDef="displayedUsers"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedUsers;"></mat-row>
+                </mat-table>
+          </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Finalizar</button>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+
+<!-- Add device Modal-->
+<div class="modal fade" id="addDeviceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Agregar Dispositivo</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="mat-elevation-z8">
+              <mat-table [dataSource]="listDevices">
+                  <ng-container matColumnDef="Dispositivo">
+                    <mat-header-cell *matHeaderCellDef>Dispositivo</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.dispositivo}}</mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="Tipo">
+                    <mat-header-cell *matHeaderCellDef>Tipo</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.tipo}}</mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="Descripcion">
+                    <mat-header-cell *matHeaderCellDef>Descripción</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                    <input [(ngModel)]="element.descripcion" type="text" class="form-control form-control-user" id="exampleFirstName" placeholder="Descripción">
+                  </mat-cell>
+                  </ng-container>}
+                  <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        <button class="btn btn-info btn-circle" (click)="addDevice(row)">
+                          <i class="fas fa-plus"></i>
+                        </button>
+                    </mat-cell>
+                  </ng-container>
+                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+          </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Finalizar</button>
+      </div>
+    </div>
+  </div>
+  </div>
   </div>
 

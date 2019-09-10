@@ -1,0 +1,48 @@
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Gestión de dispositivos</h1>
+    <p class="mb-4">En esta sección se podrán enviar comandos a los actuadoes.</p>
+
+    <!-- DataTales Devices -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Dispositivos</h6>
+      </div>
+      <div class="card-body">
+
+          <div class="mat-elevation-z8">
+              <mat-table [dataSource]="listData" matSort>
+                  <ng-container matColumnDef="Dispositivo">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Dispositivo</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.urilDispositivo.split('/')[5]}}</mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="Comando">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Comando</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                    <input name="comando" type="text" class="form-control form-control-user" id="exampleFirstName">
+                  </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="Accion">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Acción</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                    <input name="comando" type="text" class="form-control form-control-user" id="exampleFirstName">
+                  </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                      <button class="btn btn-info btn-circle" (click)="enviarAccion(row)">
+                          <i class="fas fa-external-link-alt"></i>
+                      </button>
+                    </mat-cell>
+                  </ng-container>
+                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                  <mat-paginator [pageSizeOptions]="[5,10,25,10]" [pageSize]="5" showFirstLastButtons></mat-paginator>
+                </mat-table>
+          </div>
+      </div>
+    </div>
+
+  </div>

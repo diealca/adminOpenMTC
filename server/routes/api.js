@@ -2,12 +2,18 @@ const express = require('express')
 const jwt = require('jsonwebtoken')
 const router = express.Router()
 const User = require('../models/user')
+const Device = require('../models/device')
+const Permiso = require('../models/permiso')
 const mongoose = require('mongoose')
-const db = "mongodb://adminOpenMTC:User1@localhost/openMTC"
+const config = require('../config')
+
+const {db:{ user , password, host, port, name }} = config;
+console.log("mongodb://"+user+":"+password+"@"+host+":"+port+"/"+name);
+const connectionString = "mongodb://"+user+":"+password+"@"+host+":"+port+"/"+name
 
 mongoose.set('useCreateIndex',true)
 
-mongoose.connect(db, err=>{
+mongoose.connect(connectionString, err=>{
     if (err){
         console.error('Error:' + err)
     } else{
@@ -45,6 +51,16 @@ router.get('/usuarios',(req,res)=>{
     })
 })
 
+router.get('/usuarios/operador',(req,res)=>{
+    User.find({'role':'operador'},(error,users)=>{
+        if(error){
+            res.status(401).send(error)
+        }else{
+            res.status(200).send(users)
+        }
+    })
+})
+
 router.put('/usuarios/:id',(req,res)=>{
     let userData = req.body
     console.log(userData)
@@ -74,7 +90,6 @@ router.put('/usuarios/:id',(req,res)=>{
 })
 
 router.get('/usuarios/:id',(req,res)=>{
-    let userData = req.body
     User.findById(req.params.id,(error,user)=>{
         if(error){
             console.log(error)
@@ -142,8 +157,8 @@ router.put('/usuarios/:id',(req,res)=>{
                 }
             })
         }
-    })
-}).select("+password")
+    }).select("+password")
+})
 
 router.put('/usuarios/:id/password',(req,res)=>{
     let userData = req.body
@@ -211,14 +226,51 @@ router.get('/dispositivos',(req,res)=>{
     })
 })
 
-router.get('/dipositivos/:id',(req,res)=>{
-    User.findById(req.params.id,(error,device)=>{
+router.get('/dispositivos/:id',(req,res)=>{
+    console.log(req.params.id)
+    Device.findById(req.params.id,(error,device)=>{
         if(error){
             console.log(error)
             res.status(401).send(error)
         }
         else{
             res.status(200).send(device)
+        }
+    })
+})
+
+router.get('/dispositivos/:id/usuarios',(req,res)=>{
+    console.log(req.params.id)
+    Permiso.find({'device':req.params.id},(error,permisos)=>{
+        if(error){
+            console.log(error)
+            res.status(401).send(error)
+        }
+        else{
+            console.log(permisos)
+            permisos.forEach(element => {
+                let response=[]
+                User.find({'permisos':mongoose.Types.ObjectId(element._id)},(error2,usuario)=>{
+                    if(error2){
+                        console.log(error2)
+                        res.status(401).send(error2)
+                    }
+                    else{
+                        let user={}
+                        console.log(usuario)
+                        user['idPermiso']=element._id
+                        user['tipo']=element.tipo
+                        user['user']=usuario[0].user
+                        user['idUser']=usuario[0]._id
+                        response.push(user)
+                        
+                    }
+                })
+                console.log(response)
+                res.status(200).send(response)
+            });
+            
+            
         }
     })
 })
@@ -236,9 +288,9 @@ router.post('/dispositivos',(req,res)=>{
     })
 })
 
-router.put('/dispisitivos/:id',(req,res)=>{
+router.put('/dispositivos/:id',(req,res)=>{
     let dispositivoData = req.body
-    User.findById(req.params.id,(error,dispisitivo)=>{
+    Device.findById(req.params.id,(error,dispisitivo)=>{
         if(error){
             console.log(error)
             res.status(401).send(error)
@@ -258,7 +310,7 @@ router.put('/dispisitivos/:id',(req,res)=>{
 })
 
 router.delete('/dispositivos/:id',(req,res)=>{
-    User.findByIdAndRemove(req.params.id,(error,dispisitivo)=>{
+    Device.findByIdAndRemove(req.params.id,(error,dispisitivo)=>{
         if(error){
             console.log(error)
             res.status(401).send(error)
@@ -274,7 +326,69 @@ router.delete('/dispositivos/:id',(req,res)=>{
     })
 })
 
+router.post('/permisos/usuario/:id',(req,res)=>{
+    let permisoData = req.body
+    let permiso = new Permiso(permisoData)
+    permiso.save((error,registeredPermiso)=>{
+        if(error){
+            console.log(error)
+            res.status(401).send(error)
+        } else {
+            User.findByIdAndUpdate(req.params.id,{'$push':{'permisos':registeredPermiso._id}},(error,usuario)=>{
+                if(error){
+                    console.log(error)
+                    res.status(401).send(error)
+                }
+                else{
+                    const response = {
+                        message: "Dispositivo eliminado con exito",
+                        id: usuario._id
+                    }
+        
+                    res.status(200).send(response)
+                }
+            }          
+            )
+            
+        }
+    })
+})
 
+router.get('/api/userdevice/:id/control',(req,res)=>{
+    User.findById(req.params.id,(error,usuario)=>{
+        if(error){
+            console.log(error)
+            res.status(401).send(error)
+        }
+        else{
+            let dispositivos=[]
+            usuario.permisos.forEach(element => {
+                Permiso.findById(element,(error1,permiso)=>{
+                    if(error1){
+                        console.log(error1)
+                        res.status(401).send(error1)
+                    }
+                    else{ 
+                        if(permiso.tipo === 'readwrite'){
+                        Device.findById(permiso.dispisitivo,(error2,dispositivo)=>{
+                            if(error1){
+                                console.log(error2)
+                                res.status(401).send(error2)
+                            }
+                            else{ 
+                                dispositivos.push(dispositivo)
+                            }
+                        })
+                    }
+                    }
+                })
+                console(dispositivos)
+                res.status(200).send(dispositivos)
+            })
+        }
+    
+    })
+})
 
 
 router.get('/info',verifyToken, (req,res)=>{

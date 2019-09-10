@@ -9,15 +9,15 @@ import * as Material from '@angular/material';
     Material.MatTableModule,
     Material.MatIconModule,
     Material.MatPaginatorModule,
-    Material.MatFormFieldModule,
-    Material.MatSortModule
+    Material.MatSortModule,
+    Material.MatFormFieldModule
   ],
   exports: [
     Material.MatTableModule,
     Material.MatIconModule,
     Material.MatPaginatorModule,
-    Material.MatFormFieldModule,
-    Material.MatSortModule
+    Material.MatSortModule,
+    Material.MatFormFieldModule
   ]
 })
 export class MaterialModule { }

@@ -9,7 +9,7 @@ const deviceSchema = new Schema({
     },
     tipo: {
         type: String,
-        enum: ['administrador','operador'],
+        enum: ['sensor','actuador'],
         message: 'El tipo de dispositvo no esta definido.',
     },
     descripcion: String

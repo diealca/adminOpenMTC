@@ -16,6 +16,8 @@ import { AdminusersComponent } from './adminusers/adminusers.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material/material.module';
 import { MandevicesComponent } from './mandevices/mandevices.component';
+import { MondevicesComponent } from './mondevices/mondevices.component';
+import { ModdevicesComponent } from './moddevices/moddevices.component';
 
 
 @NgModule({
@@ -25,7 +27,9 @@ import { MandevicesComponent } from './mandevices/mandevices.component';
     DashComponent,
     RegisterComponent,
     AdminusersComponent,
-    MandevicesComponent
+    MandevicesComponent,
+    MondevicesComponent,
+    ModdevicesComponent
   ],
   imports: [
     BrowserModule,

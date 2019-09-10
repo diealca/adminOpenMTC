@@ -17,7 +17,7 @@ export class AdminusersComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator
 
   registerUserData = {}
-  modifyUserData={}
+  modifyUserData= {}
   passwordVer=""
   errorMsg=""
   successMsg=""
@@ -25,7 +25,12 @@ export class AdminusersComponent implements OnInit {
   ngOnInit() {
     this.usersService.getUsers().subscribe(
       res =>{
-        this.listData = new MatTableDataSource(res)
+        let array = res.map(item =>{
+          return{
+            ...item
+          }
+        })
+        this.listData = new MatTableDataSource(array)
         this.listData.sort= this.sort
         this.listData.paginator=this.paginator
       }
@@ -86,10 +91,12 @@ export class AdminusersComponent implements OnInit {
 
   chargeUser(dataUser){
     this.modifyUserData=dataUser
-   // $('#modifyUserModal').modal('show')
+    console.log(this.modifyUserData)
+    this.modifyUserData['password']=""
   }
 
   modifyUser(){
+    console.log(this.modifyUserData)
     this.usersService.modifyUser(this.modifyUserData)
     .subscribe(
       res => {
@@ -114,5 +121,12 @@ export class AdminusersComponent implements OnInit {
     this.registerUserData = {}
     this.modifyUserData={}
     this.passwordVer=""
+    this.usersService.getUsers().subscribe(
+      res =>{
+        this.listData = new MatTableDataSource(res)
+        this.listData.sort= this.sort
+        this.listData.paginator=this.paginator
+      }
+    )
   }
 }

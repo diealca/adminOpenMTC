@@ -77,11 +77,11 @@
 
 <!-- Modify User Modal-->
 <div class="modal fade" id="modifyUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="modifyUserLabel">Modificar usuario</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close" (click)="clearUser()">
             <span aria-hidden="true">×</span>
           </button>
         </div>
@@ -126,53 +126,55 @@
           </div>
         </div>
       </div>
-    </div>
+      </div>
+  </div>
 
 
 <!-- Create User Modal-->
 <div class="modal fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Crear nuevo usuario</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close" (click)="clearUser()">
             <span aria-hidden="true">×</span>
           </button>
         </div>
         <div class="modal-body">
-            <div class="p-5">
-                <form class="user">
-                  <div class="form-group row">
-                    <div class="col-sm-6 mb-3 mb-sm-0">
-                      <input [(ngModel)]="registerUserData.user" name="user" type="text" class="form-control form-control-user" id="exampleFirstName" placeholder="Usuario">
-                    </div>
-                    <div class="col-sm-6">
-                      <select [(ngModel)]="registerUserData.role" name="role" class="form-control" id="exampleRole" placeholder="Rol">
-                          <option value="administrador">Administrador</option>
-                          <option value="operador">Operador</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <input [(ngModel)]="registerUserData.email" name="email" type="email" class="form-control form-control-user" id="exampleInputEmail" placeholder="Correo Electrónico">
-                  </div>
-                  <div class="form-group row">
-                    <div class="col-sm-6 mb-3 mb-sm-0">
-                      <input [(ngModel)]="registerUserData.password" name="password" type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Contraseña">
-                    </div>
-                    <div class="col-sm-6">
-                      <input [(ngModel)]="passwordVer" name="passwordVer" type="password" class="form-control form-control-user" id="exampleRepeatPassword" placeholder="Verificación Contraseña">
-                    </div>
-                  </div>
-                </form>
-                <div class="text-center" *ngIf="(registerUserData.password!==passwordVer && passwordVer!=='')">
-                    <div class="btn-danger btn-icon-split">
-                      <span class="icon text-white-50">
-                        <i class="fas fa-exclamation-triangle"></i>
-                      </span>
-                      <span class="text">La contraseña no coincide</span>
-                    </div>
+          <div class="p-5">
+            <form class="user">
+              <div class="form-group row">
+                <div class="col-sm-6 mb-3 mb-sm-0">
+                  <input [(ngModel)]="registerUserData.user" name="user" type="text" class="form-control form-control-user" id="exampleFirstName" placeholder="Usuario">
+                </div>
+                <div class="col-sm-6">
+                  <select [(ngModel)]="registerUserData.role" name="role" class="form-control" id="exampleRole" placeholder="Rol">
+                    <option value="administrador">Administrador</option>
+                    <option value="operador">Operador</option>
+                  </select>
+                </div>
               </div>
+              <div class="form-group">
+                <input [(ngModel)]="registerUserData.email" name="email" type="email" class="form-control form-control-user" id="exampleInputEmail" placeholder="Correo Electrónico">
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-6 mb-3 mb-sm-0">
+                  <input [(ngModel)]="registerUserData.password" name="password" type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Contraseña">
+                </div>
+                <div class="col-sm-6">
+                  <input [(ngModel)]="passwordVer" name="passwordVer" type="password" class="form-control form-control-user" id="exampleRepeatPassword" placeholder="Verificación Contraseña">
+                </div>
+              </div>
+              <div class="text-center" *ngIf="(registerUserData.password!==passwordVer && passwordVer!=='')">
+                <div class="btn-danger btn-icon-split">
+                  <span class="icon text-white-50">
+                    <i class="fas fa-exclamation-triangle"></i>
+                  </span>
+                  <span class="text">La contraseña no coincide</span>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>

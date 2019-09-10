@@ -25,4 +25,8 @@ export class UsersService {
   modifyUser(userData){
     return this.http.put<any>(this._usersUrl+"/"+userData._id,userData)
   }
+
+  getUsersOperador(){
+    return this.http.get<any>(this._usersUrl+"/operador")
+  }
 }

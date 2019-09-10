@@ -10,6 +10,7 @@ export class DashComponent implements OnInit {
   users = false
   devices = false
   monitor = false
+  modify = false
 
   currentUser =""
   currentRol = ""
@@ -24,19 +25,30 @@ export class DashComponent implements OnInit {
     this.users = true;
     this.devices = false;
     this.monitor = false;
+    this.modify = false;
   }
 
   devicesAdmin(){
     this.users = false;
     this.devices = true;
     this.monitor = false;
+    this.modify = false;
   }
 
   monitorAdmin(){
     this.users = false;
     this.devices = false;
     this.monitor = true;
+    this.modify = false;
   }
+
+  modifyAdmin(){
+    this.users = false;
+    this.devices = false;
+    this.monitor = false;
+    this.modify = true;
+  }
+
 
   logoutUser(){
     this._authService.logoutUser()

@@ -1,30 +1,34 @@
 const fs = require('fs');
+const config = require('./config')
 const PROXY_CONFIG = {
   "/api/*": {
     "target":{
-      "host": "api.openmtc.org",
-      "port": "3000",
+      "host": config.api.host,
+      "port": config.api.port,
       "protocol": "https:",
-      "key": fs.readFileSync('./cert/console.key.pem'),
-      "cert": fs.readFileSync('./cert/console.crt.pem'),
-      "ca":fs.readFileSync('./cert/signing-ca-chain.pem')
+      "key": fs.readFileSync(config.certs.key),
+      "cert": fs.readFileSync(config.certs.cert),
+      "ca":fs.readFileSync(config.certs.ca)
       },
       "secure": true,
     "logLevel": "debug",
     "changeOrigin": true
   },
-  "/gateway/*": {
+  "/onem2m/*": {
     "target":{
-      "host": "gateway.openmtc.org",
-      "port": "18000",
+      "host": config.onem2m.host,
+      "port": config.onem2m.port,
       "protocol": "https:",
-      "key": fs.readFileSync('./cert/console.key.pem'),
-      "cert": fs.readFileSync('./cert/console.crt.pem'),
-      "ca":fs.readFileSync('./cert/signing-ca-chain.pem')
+      "key": fs.readFileSync(config.certs.key),
+      "cert": fs.readFileSync(config.certs.cert),
+      "ca":fs.readFileSync(config.certs.ca)
       },
       "secure": true,
     "logLevel": "debug",
-    "changeOrigin": true
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/onem2m": ""
+}
   }
 }
 
